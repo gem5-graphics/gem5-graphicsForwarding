@@ -1,0 +1,17 @@
+# -*- mode:python -*-
+
+Import('*')
+
+import os
+
+env.Append(CCFLAGS=["-Wno-error"])
+
+Source('gem5_graphics_calls.cc')
+Source('graphicsStream.cc')
+Source('graphics_syscall_helper.cc')
+Source('serialize_graphics.cc')
+
+Source('emugl/opengles.cpp')
+Source('emugl/android/utils/dll.c')
+
+DebugFlag("GraphicsCalls")
