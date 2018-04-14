@@ -56,7 +56,8 @@ os_types = { 'alpha' : [ 'linux' ],
                          'android-ics',
                          'android-jellybean',
                          'android-kitkat',
-                         'android-nougat', ],
+                         'android-nougat',
+                         'android-nougat-gf', ],
            }
 
 class CowIdeDisk(IdeDisk):
