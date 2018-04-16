@@ -79,6 +79,7 @@
 
 #define M5OP_WORK_BEGIN         0x5a
 #define M5OP_WORK_END           0x5b
+#define M5OP_GPU                0x5c
 
 #define M5OP_SE_SYSCALL         0x60
 #define M5OP_SE_PAGE_FAULT      0x61
@@ -128,6 +129,7 @@
     M5OP(m5_panic, M5OP_PANIC, 0);                              \
     M5OP(m5_work_begin, M5OP_WORK_BEGIN, 0);                    \
     M5OP(m5_work_end, M5OP_WORK_END, 0);                        \
+    M5OP(m5_gpu, M5OP_GPU, 0);                                  \
     M5OP(m5_dist_toggle_sync, M5OP_DIST_TOGGLE_SYNC, 0);
 
 #define M5OP_FOREACH_ANNOTATION                      \

@@ -68,6 +68,9 @@
 #include "debug/Quiesce.hh"
 #include "debug/WorkItems.hh"
 #include "dev/net/dist_iface.hh"
+//#include "graphics/graphicsStream.hh"
+//#include "graphics/serialize_graphics.hh"
+#include "graphics/gem5_graphics_calls.h"
 #include "params/BaseCPU.hh"
 #include "sim/full_system.hh"
 #include "sim/initparam_keys.hh"
@@ -714,6 +717,25 @@ workend(ThreadContext *tc, uint64_t workid, uint64_t threadid)
             exitSimLoop("work items exit count reached");
         }
     }
+}
+
+void
+gpu(ThreadContext *tc, uint64_t gpusysno, uint64_t call_params)
+{
+    //if not a cuda for a graphics related call then it is ignored and warning is sent
+    if (gpusysno >= GEM5_GPU_CALLS_END) {
+        panic("Ignoring gpu syscall %d\n", gpusysno);
+    }
+
+    //check if it is a cuda call
+    if (gpusysno<GEM5_GPU_CALLS_START){
+        panic("GPGPU-Sim calls are not supported \n");
+        return;
+    }
+
+    assert(gpusysno>=GEM5_GPU_CALLS_START and gpusysno<GEM5_GPU_CALLS_END);
+    DPRINTF(GraphicsCalls, "gem5pipe: received a graphics call number %d at tick %d\n", (int)gpusysno, curTick());
+    gem5GraphicsCalls_t::gem5GraphicsCalls.executeGraphicsCommand(tc, gpusysno, call_params);
 }
 
 } // namespace PseudoInst
