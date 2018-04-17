@@ -66,7 +66,7 @@ static void onNewGpuFrame(void* opaque,
     }
 
     std::stringstream ss;
-    ss << "fb." << std::setw(9) << std::setfill('0') << fnum-1 << "." << curTick() << ".bmp.gz";
+    ss << "fb." << std::setw(9) << std::setfill('0') << fnum-1 /*<< "." << curTick()*/ << ".bmp.gz";
 
     //Bitmap bitmap(&fb);
     BmpWriter bitmap(&fb);
