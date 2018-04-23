@@ -72,6 +72,7 @@
 
 // For stat reset hack
 #include "sim/stat_control.hh"
+#include "graphics/serialize_graphics.hh"
 
 using namespace std;
 
@@ -608,6 +609,8 @@ Serializable::serializeAll(const string &cpt_dir)
     globals.serializeSection(outstream, "Globals");
 
     SimObject::serializeAll(outstream);
+	string graphics_file = dir + CheckpointIn::graphicsFilename;
+    checkpointGraphics::SerializeObject.serializeGraphicsState(graphics_file.c_str());
 }
 
 void
@@ -646,6 +649,13 @@ Serializable::ScopedCheckpointSection::nameOut(CheckpointOut &cp)
 }
 
 void
+Serializable::unserializeGraphics(std::string cpt_dir, SimObjectResolver &resolver){
+    CheckpointIn gcp(cpt_dir, resolver, CheckpointIn::CheckpointFileType::GraphicsFile);
+    Serializable::ScopedCheckpointSection sec(gcp, "Graphics");
+    checkpointGraphics::SerializeObject.unserializeGraphicsState(gcp);
+}
+
+void
 debug_serialize(const string &cpt_dir)
 {
     Serializable::serializeAll(cpt_dir);
@@ -660,6 +670,7 @@ Serializable::currentSection()
 }
 
 const char *CheckpointIn::baseFilename = "m5.cpt";
+const char *CheckpointIn::graphicsFilename = "graphics.cpt";
 
 string CheckpointIn::currentDirectory;
 
@@ -682,10 +693,16 @@ CheckpointIn::dir()
 }
 
 
-CheckpointIn::CheckpointIn(const string &cpt_dir, SimObjectResolver &resolver)
+CheckpointIn::CheckpointIn(const string &cpt_dir, SimObjectResolver &resolver, CheckpointFileType fileType)
     : db(new IniFile), objNameResolver(resolver), cptDir(setDir(cpt_dir))
 {
-    string filename = cptDir + "/" + CheckpointIn::baseFilename;
+    string filename =cptDir + "/";
+    if(fileType==CheckpointFileType::BaseFile){
+        filename+= CheckpointIn::baseFilename;
+    } else {
+        filename+= CheckpointIn::graphicsFilename;
+    }
+    
     if (!db->load(filename)) {
         fatal("Can't load checkpoint file '%s'\n", filename);
     }

@@ -143,6 +143,7 @@ def instantiate(ckpt_dir=None):
         _drain_manager.preCheckpointRestore()
         ckpt = _m5.core.getCheckpoint(ckpt_dir)
         _m5.core.unserializeGlobals(ckpt);
+        _m5.core.unserializeGraphics(ckpt_dir)
         for obj in root.descendants(): obj.loadState(ckpt)
     else:
         for obj in root.descendants(): obj.initState()

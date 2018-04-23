@@ -337,6 +337,7 @@ class Serializable
     static int ckptPrevCount;
     static void serializeAll(const std::string &cpt_dir);
     static void unserializeGlobals(CheckpointIn &cp);
+    static void unserializeGraphics(std::string cpt_dir, SimObjectResolver &resolver);
 
   private:
     static std::stack<std::string> path;
@@ -354,7 +355,9 @@ class CheckpointIn
     SimObjectResolver &objNameResolver;
 
   public:
-    CheckpointIn(const std::string &cpt_dir, SimObjectResolver &resolver);
+    enum class CheckpointFileType { BaseFile, GraphicsFile};    
+
+    CheckpointIn(const std::string &cpt_dir, SimObjectResolver &resolver, CheckpointFileType f = CheckpointFileType::BaseFile);
     ~CheckpointIn();
 
     const std::string cptDir;
@@ -394,6 +397,9 @@ class CheckpointIn
 
     // Filename for base checkpoint file within directory.
     static const char *baseFilename;
+
+    //Filename for base graphics checkpoint file within directory
+    static const char *graphicsFilename;
 };
 
 #endif // __SERIALIZE_HH__
